@@ -6,30 +6,32 @@ from typing import List
 from ft_filter import ft_filter
 
 
-def parse_args() -> tuple[str, int]:
-    """Validate CLI arguments and return the text plus threshold."""
+def read_arguments() -> tuple[str, int]:
+    """Return the text and length limit after basic validation."""
     args = sys.argv[1:]
     if len(args) != 2:
         raise AssertionError("the arguments are bad")
-    text, raw_threshold = args
-    if any(not (char.isalpha() or char.isspace()) for char in text):
+    text, limit_text = args
+    for char in text:
+        if not (char.isalpha() or char.isspace()):
+            raise AssertionError("the arguments are bad")
+    if limit_text.startswith("-"):
+        digits = limit_text[1:]
+    else:
+        digits = limit_text
+    if not digits.isdigit():
         raise AssertionError("the arguments are bad")
-    try:
-        threshold = int(raw_threshold)
-    except ValueError as exc:
-        raise AssertionError("the arguments are bad") from exc
-    return text, threshold
+    return text, int(limit_text)
 
 
-def _extract_words(text: str) -> list[str]:
-    """Return words preserving single trailing spaces if present."""
+def split_words(text: str) -> list[str]:
+    """Separate the text into words while keeping single trailing spaces."""
     words: list[str] = []
     current = ""
     for char in text:
         current += char
-        if char == " ":
-            if current.strip():
-                words.append(current)
+        if char == " " and current.strip():
+            words.append(current)
             current = ""
     if current.strip():
         words.append(current)
@@ -38,15 +40,15 @@ def _extract_words(text: str) -> list[str]:
 
 def filter_words(text: str, limit: int) -> List[str]:
     """Return the list of words longer than limit."""
-    words = [word for word in _extract_words(text)]
-    condition = lambda word: len(word.strip()) > limit  # noqa: E731
-    return list(ft_filter(condition, words))
+    words = [word for word in split_words(text)]
+    is_long_enough = lambda word: len(word.strip()) > limit  # noqa: E731
+    return list(ft_filter(is_long_enough, words))
 
 
 def main() -> None:
     """Program entry point."""
     try:
-        text, limit = parse_args()
+        text, limit = read_arguments()
         print(filter_words(text, limit))
     except AssertionError as error:
         print(f"AssertionError: {error}")

@@ -1,3 +1,0 @@
-ft_package is a minimal example used to validate the packaging workflow for the
-Piscine subject. Build it with ``python -m build`` to produce wheel and source
-archives compatible with ``pip install``.

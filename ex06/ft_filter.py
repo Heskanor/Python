@@ -10,9 +10,17 @@ def ft_filter(
     function: Optional[Callable[[T], bool]], iterable: Iterable[T]
 ) -> Iterator[T]:
     """ft_filter(function or None, iterable) --> filter object."""
-    predicate = function or bool
-    if not callable(predicate):
-        raise TypeError("ft_filter expected a callable or None as first argument")
-    filtered_items = [item for item in iterable if predicate(item)]
-    for item in filtered_items:
-        yield item
+    if function is None:
+        predicate = bool
+    elif callable(function):
+        predicate = function
+    else:
+        raise TypeError(
+            "ft_filter expected a callable or None as first argument"
+        )
+
+    result: list[T] = []
+    for item in iterable:
+        if predicate(item):
+            result.append(item)
+    return iter(result)

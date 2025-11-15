@@ -7,15 +7,26 @@ from typing import Dict
 
 def count_characters(text: str) -> Dict[str, int]:
     """Return statistics on the provided text."""
-    punct_set = set(string.punctuation)
     stats = {
         "total": len(text),
-        "upper": sum(1 for char in text if char.isupper()),
-        "lower": sum(1 for char in text if char.islower()),
-        "punctuation": sum(1 for char in text if char in punct_set),
-        "spaces": sum(1 for char in text if char.isspace()),
-        "digits": sum(1 for char in text if char.isdigit()),
+        "upper": 0,
+        "lower": 0,
+        "punctuation": 0,
+        "spaces": 0,
+        "digits": 0,
     }
+    # Walk through every character once and update the matching counters.
+    for char in text:
+        if char.isupper():
+            stats["upper"] += 1
+        elif char.islower():
+            stats["lower"] += 1
+        if char in string.punctuation:
+            stats["punctuation"] += 1
+        if char.isspace():
+            stats["spaces"] += 1
+        if char.isdigit():
+            stats["digits"] += 1
     return stats
 
 
@@ -26,6 +37,7 @@ def read_text(args: list[str]) -> str:
     if args:
         return args[0]
     print("What is the text to count?")
+    # readline() keeps the trailing newline so it counts as a space character.
     return sys.stdin.readline()
 
 

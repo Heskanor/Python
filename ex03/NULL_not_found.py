@@ -1,25 +1,25 @@
-"""Detect and describe special null-like values."""
+"""Identify different null-like values."""
 
-import math
+from math import isnan
 from typing import Any
 
 
 def NULL_not_found(obj: Any) -> int:
-    """Print the null category of obj, returning 0 on success and 1 otherwise."""
+    """Print the null category of obj, return 0 on success and 1 on failure."""
     if obj is None:
-        print(f"Nothing: None {type(obj)}")
+        print("Nothing:", obj, type(obj))
         return 0
-    if isinstance(obj, float) and math.isnan(obj):
-        print(f"Cheese: nan {type(obj)}")
-        return 0
-    if isinstance(obj, int) and not isinstance(obj, bool) and obj == 0:
-        print(f"Zero: 0 {type(obj)}")
-        return 0
-    if isinstance(obj, str) and obj == "":
-        print(f"Empty: {type(obj)}")
+    if isinstance(obj, float) and isnan(obj):
+        print("Cheese:", obj, type(obj))
         return 0
     if obj is False:
-        print(f"Fake: False {type(obj)}")
+        print("Fake:", obj, type(obj))
+        return 0
+    if isinstance(obj, int) and obj == 0 and not isinstance(obj, bool):
+        print("Zero:", obj, type(obj))
+        return 0
+    if isinstance(obj, str) and obj == "":
+        print("Empty:", type(obj))
         return 0
     print("Type not found")
     return 1
